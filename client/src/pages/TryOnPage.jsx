@@ -1,24 +1,14 @@
 import React, { useState, Suspense } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { ChevronLeft, Info, HelpCircle, ShieldCheck, Upload, LayoutGrid } from 'lucide-react';
-import TryOnViewer from '../components/ar/TryOnViewer';
-import ProductSelector, { REAL_PRODUCTS } from '../components/ar/ProductSelector';
-import UploadProduct from '../components/ar/UploadProduct';
+import { ChevronLeft, Info, HelpCircle, ShieldCheck, Upload, LayoutGrid, Layers, Sparkles } from 'lucide-react';
+import ARFittingRoom from '../components/ar/fitting-room/ARFittingRoom';
 
 /**
- * TryOnPage - Universal AR Try-On with Custom Upload Support
+ * TryOnPage - Advanced AR Fitting Room Mirror
  */
 export default function TryOn() {
-  const [selectedProduct, setSelectedProduct] = useState(REAL_PRODUCTS[0]);
-  const [mode, setMode] = useState('catalog'); // 'catalog' | 'upload'
-  
-  const handleCustomUpload = (product) => {
-    setSelectedProduct(product);
-    setMode('catalog'); // Switch back to see it in action
-  };
-
   return (
-    <div className="min-h-screen bg-surface-container-lowest font-manrope selection:bg-primary selection:text-white">
+    <div className="min-h-screen bg-surface-container-lowest font-manrope">
       {/* Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-outline-variant px-6 py-4 flex items-center justify-between">
         <Link 
@@ -29,104 +19,63 @@ export default function TryOn() {
           BACK TO SHOWROOM
         </Link>
         
-        <div className="flex items-center gap-6">
-           <div className="flex items-center gap-2">
-              <button 
-                onClick={() => setMode('catalog')}
-                className={`p-2 rounded-xl transition-all ${mode === 'catalog' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container'}`}
-              >
-                <LayoutGrid className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={() => setMode('upload')}
-                className={`p-2 rounded-xl transition-all ${mode === 'upload' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container'}`}
-              >
-                <Upload className="w-5 h-5" />
-              </button>
-           </div>
-           <div className="w-px h-6 bg-outline-variant" />
-           <HelpCircle className="w-5 h-5 text-on-surface-variant cursor-pointer hover:text-primary transition-colors" />
+        <div className="flex items-center gap-4">
+           <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">AR LIVE MIRROR ACTIVE</span>
+           <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 items-start">
+      <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto flex flex-col gap-8">
+        <div className="space-y-4 text-center">
+            <h1 className="text-6xl font-black font-headline text-on-surface tracking-tighter leading-[0.9]">
+              Virtual <span className="text-primary italic">Fitting</span> Room
+            </h1>
+            <p className="text-on-surface-variant text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+              Step in front of your camera. Layer clothes, switch styles, and see yourself in our 2026 collection instantly.
+            </p>
+        </div>
         
-        {/* Left Section: the AR Viewer */}
-        <section className="flex-1 w-full space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
-           <div className="space-y-4">
-              <h1 className="text-5xl font-black font-headline text-on-surface tracking-tighter leading-[1.1]">
-                {mode === 'catalog' ? 'Dynamic' : 'Custom'} <span className="text-primary italic px-2 bg-primary/5 rounded-2xl">Virtual</span> Fitting
-              </h1>
-              <p className="text-on-surface-variant text-lg max-w-xl font-medium leading-relaxed">
-                {mode === 'catalog' 
-                  ? 'Real-time accessory and apparel mapping using advanced neural landmarks.' 
-                  : 'Bring your own transparent PNGs and see them mapped instantly to your body.'}
-              </p>
+        <Suspense fallback={
+          <div className="w-full aspect-video bg-black rounded-[40px] flex items-center justify-center border-8 border-surface-container">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        }>
+          <ARFittingRoom />
+        </Suspense>
+
+        {/* Pro Tips Footer */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+           <div className="bg-white p-8 rounded-[2rem] border border-outline-variant flex flex-col items-center text-center gap-4 shadow-sm">
+             <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+               <ShieldCheck className="w-6 h-6 text-primary" />
+             </div>
+             <div>
+               <h3 className="font-bold text-on-surface">Biometric Fit</h3>
+               <p className="text-xs text-on-surface-variant font-medium">Skeletal landmarks mapped with 98.4% accuracy.</p>
+             </div>
            </div>
            
-           <Suspense fallback={
-             <div className="w-full aspect-[4/3] bg-black rounded-[40px] flex items-center justify-center border-8 border-surface-container">
-                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+           <div className="bg-white p-8 rounded-[2rem] border border-outline-variant flex flex-col items-center text-center gap-4 shadow-sm">
+             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center">
+               <Layers className="w-6 h-6 text-indigo-500" />
              </div>
-           }>
-             <TryOnViewer selectedProduct={selectedProduct} />
-           </Suspense>
-
-           <div className="flex items-center gap-4">
-              <button 
-                className="flex-1 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl border border-white/20 flex items-center justify-center gap-2 transition-all font-bold uppercase tracking-widest text-[10px]"
-                onClick={() => setMode('upload')}
-              >
-                NEW CUSTOM UPLOAD
-              </button>
-              <button 
-                className="flex-1 py-4 bg-primary text-white rounded-2xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] font-bold uppercase tracking-widest text-[10px]"
-                onClick={() => alert("Capture saved to Gallery!")}
-              >
-                SAVE SNAPSHOT
-              </button>
+             <div>
+               <h3 className="font-bold text-on-surface">Multi-Layering</h3>
+               <p className="text-xs text-on-surface-variant font-medium">Wear jackets over shirts seamlessly.</p>
+             </div>
            </div>
-        </section>
 
-        {/* Right Section: Interactive Sidebar */}
-        <aside className="w-full lg:w-96 space-y-8 lg:sticky lg:top-24 animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
-           {mode === 'catalog' ? (
-             <div className="bg-white rounded-[32px] p-8 shadow-2xl shadow-indigo-500/5 border border-outline-variant">
-                <ProductSelector 
-                  selectedId={selectedProduct.id} 
-                  onSelect={setSelectedProduct} 
-                />
+           <div className="bg-white p-8 rounded-[2rem] border border-outline-variant flex flex-col items-center text-center gap-4 shadow-sm">
+             <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center">
+               <Sparkles className="w-6 h-6 text-green-500" />
              </div>
-           ) : (
-             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <UploadProduct onUpload={handleCustomUpload} />
-                <button 
-                  onClick={() => setMode('catalog')}
-                  className="w-full mt-4 py-3 text-on-surface-variant hover:text-primary font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
-                >
-                  <ChevronLeft className="w-4 h-4" /> Back to Catalog
-                </button>
+             <div>
+               <h3 className="font-bold text-on-surface">Neural Shaders</h3>
+               <p className="text-xs text-on-surface-variant font-medium">Real-time light and shadow simulation.</p>
              </div>
-           )}
-           
-           {/* Info Matrics Decoration */}
-           <div className="bg-surface rounded-3xl p-6 border border-outline-variant border-dashed space-y-4">
-              <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-primary" /> Tracking Integrity
-              </h4>
-              <div className="grid grid-cols-2 gap-3 text-[10px] font-bold">
-                 <div className="bg-surface-container p-3 rounded-xl">
-                    <span className="text-on-surface-variant block mb-1">Scale</span>
-                    <span className="text-primary truncate uppercase">Euclidean Biometrics</span>
-                 </div>
-                 <div className="bg-surface-container p-3 rounded-xl">
-                    <span className="text-on-surface-variant block mb-1">Latency</span>
-                    <span className="text-primary truncate uppercase">Neural 60FPS</span>
-                 </div>
-              </div>
            </div>
-        </aside>
+        </div>
       </main>
     </div>
   );

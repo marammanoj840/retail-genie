@@ -7,6 +7,14 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@mediapipe/face_mesh', '@mediapipe/camera_utils'],
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     commonjsOptions: {
       include: [/node_modules/],
