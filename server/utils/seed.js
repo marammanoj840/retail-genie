@@ -1,44 +1,15 @@
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import connectDB from '../config/db.js';
 import Product from '../models/Product.js';
+import Review from '../models/Review.js';
 
-export const getProducts = async (req, res) => {
-  try {
-    let products;
-    try {
-      products = await Product.find({});
-    } catch (dbError) {
-      // Fallback for demo if DB is not connected
-      console.warn('DB not connected, sending mock data');
-      products = mockData;
-    }
-    
-    if (products.length === 0) {
-      return res.json(mockData);
-    }
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+dotenv.config({ path: '../.env' });
 
-export const getProductById = async (req, res) => {
-  try {
-    let product;
-    try {
-      product = await Product.findById(req.params.id);
-    } catch (dbError) {
-      product = mockData.find(p => p._id === req.params.id);
-    }
-    
-    if (!product) return res.status(404).json({ error: 'Not found' });
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+connectDB();
 
-const mockData = [
+const mockProducts = [
   {
-    _id: "65e23f1a2b3c4d5e6f7a8b9c",
     name: "Urban Premium Hoodie",
     description: "Relaxed fit hoodie crafted from heavyweight ultra-soft cotton. Features a sleek minimalist design suitable for any casual outing.",
     price: 1499,
@@ -47,7 +18,6 @@ const mockData = [
     rating: 4.8
   },
   {
-    _id: "65e23f1a2b3c4d5e6f7a8b9d",
     name: "Classic Denim Jacket",
     description: "Vintage wash denim jacket with silver hardware. A timeless wardrobe essential that pairs with almost anything.",
     price: 2299,
@@ -56,7 +26,6 @@ const mockData = [
     rating: 4.5
   },
   {
-    _id: "65e23f1a2b3c4d5e6f7a8b9e",
     name: "SportTech Running Shoes",
     description: "Lightweight and breathable sneakers with active suspension technology for all-day comfort.",
     price: 3499,
@@ -65,7 +34,6 @@ const mockData = [
     rating: 3.8
   },
   {
-    _id: "65e23f1a2b3c4d5e6f7a8b9f",
     name: "Summer Linen Shirt",
     description: "Breathable 100% linen shirt perfect for hot summer days. Smart casual look with a relaxed collar.",
     price: 1299,
@@ -74,3 +42,20 @@ const mockData = [
     rating: 4.2
   }
 ];
+
+const importData = async () => {
+  try {
+    await Product.deleteMany();
+    await Review.deleteMany();
+
+    const createdProducts = await Product.insertMany(mockProducts);
+    
+    console.log('Data Imported successfully! Added', createdProducts.length, 'products.');
+    process.exit();
+  } catch (error) {
+    console.error('Error importing data:', error.message);
+    process.exit(1);
+  }
+};
+
+importData();

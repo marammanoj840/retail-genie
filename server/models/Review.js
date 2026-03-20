@@ -1,1 +1,10 @@
-// Review.js - starter file
+import mongoose from 'mongoose';
+
+const reviewSchema = new mongoose.Schema({
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  text: { type: String, required: true },
+  rating: { type: Number, required: true },
+  sentiment: { type: String, enum: ['Positive', 'Neutral', 'Negative'] }
+}, { timestamps: true });
+
+export default mongoose.model('Review', reviewSchema);
