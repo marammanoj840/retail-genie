@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import apiRoutes from './routes/api.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ connectDB();
 
 // API Routes
 app.use('/api', apiRoutes);
+app.use('/api/auth', authRoutes);
 // Health check route
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Retail-Genie Server is running' });

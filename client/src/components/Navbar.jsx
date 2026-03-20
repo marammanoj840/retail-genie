@@ -18,7 +18,9 @@ export default function Navbar() {
             <Link to="/try-on" className="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:scale-105 transition-transform duration-200 font-manrope">Virtual Try-On</Link>
           </nav>
           <Link to="/login" className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-semibold hover:scale-105 active:scale-95 transition-all shadow-md inline-block text-center">
-            Profile
+            {localStorage.getItem('retailGenieUser') 
+              ? JSON.parse(localStorage.getItem('retailGenieUser')).name.split(' ')[0] 
+              : 'Profile'}
           </Link>
         </div>
       </header>
